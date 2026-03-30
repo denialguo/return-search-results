@@ -1,7 +1,4 @@
 {
-   "background": {
-      "service_worker": "background.js"
-   },
    "content_scripts": [ {
       "js": [ "content.js" ],
       "matches": [ "https://www.google.com/search*" ]
