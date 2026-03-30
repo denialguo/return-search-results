@@ -83,19 +83,18 @@ function updateDisplay() {
     }
 }
 
-// Force Google to populate the real result count by toggling the Tools button.
-// Google only fills #result-stats when the Tools panel activates.
+// Open Google's Tools menu briefly so the result count is populated.
 function triggerToolsToGetCount() {
     const toolsBtn = document.getElementById('hdtb-tls');
     if (!toolsBtn) return;
 
-    // Check if we already have a real count — no need to toggle
+    // If the real count is already available, update and stop.
     if (isRealCount(getStatsText())) {
         updateDisplay();
         return;
     }
 
-    // Hide the tools menu container so the toggle is invisible
+    // Keep the Tools menu hidden while we toggle it.
     const toolsMenu = document.getElementById('hdtbMenus');
     if (toolsMenu) {
         toolsMenu.style.transition = 'none';
@@ -103,17 +102,17 @@ function triggerToolsToGetCount() {
         toolsMenu.style.visibility = 'hidden';
     }
 
-    // Click to open (triggers Google's async count fetch)
+    // Open Tools so Google loads the count.
     toolsBtn.click();
 
-    // Wait for Google to populate, then read and close
+    // Wait a moment, then read the count and close Tools.
     setTimeout(() => {
         updateDisplay();
 
-        // Click again to close
+        // Close Tools again.
         toolsBtn.click();
 
-        // Restore tools menu visibility
+        // Restore the Tools menu visibility.
         setTimeout(() => {
             if (toolsMenu) {
                 toolsMenu.style.transition = '';
@@ -125,17 +124,17 @@ function triggerToolsToGetCount() {
     }, 300);
 }
 
-// Initial run
+// Run once when the script loads.
 updateDisplay();
 
-// If we got 0 results, trigger the Tools workaround
+// If there is no valid count yet, try the Tools workaround.
 setTimeout(() => {
     if (!isRealCount(lastGoodStats)) {
         triggerToolsToGetCount();
     }
 }, 50);
 
-// Watch for DOM changes (SPA navigation, etc.)
+// Keep the display updated when the page changes.
 const bodyObserver = new MutationObserver(() => {
     requestAnimationFrame(updateDisplay);
 });
